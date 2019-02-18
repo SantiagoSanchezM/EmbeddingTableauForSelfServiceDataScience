@@ -7,4 +7,4 @@ The web application is based on the code published [here](https://code.msdn.micr
 This was one of the JEDI-level breakout sessions showed during TC18 @ New Orleans. You can watch the recording of the session [here](https://youtu.be/sddI0SjcrEg?t=2).
 
 # Slides
-Look inside the Slides folder for key details including the solution's architecture and snippets of code.
+Look inside the [slides](https://github.com/SantiagoSanchezM/EmbeddingTableauForSelfServiceDataScience/blob/master/Slides/EmbeddingTableauForSelfServiceDataScience.pdf) for key details including the solution's architecture and snippets of code.
