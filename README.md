@@ -1,4 +1,4 @@
-# EmbeddingTableauForSelfServiceDataScience
+# Embedding Tableau For Self-Service Data Science
 A .NET web application that calls a predictive model in Python based on user-provide parameters. Its results are stored in a SQL Server Database and then displayed within the webapp as embedded Tableau Server visualizations.
 
 The web application is based on the code published [here](https://code.msdn.microsoft.com/ASPNET-MVC-Application-b4b0dc3f). Integration with Python and Tableau Server are extensions built on top of it.
