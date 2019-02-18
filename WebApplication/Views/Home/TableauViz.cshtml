@@ -1,0 +1,58 @@
+﻿@using WebApplication.Extensions
+@using System.Configuration;
+
+@{
+    ViewBag.Title = "";
+}
+    
+	<div id='eventBox' class="box box-warning" style='width: 1000px; min-height:40px; display:none'>
+        <div id='eventContainer' class="box-body">
+            <div id='eventPanel' style="float: left"></div>
+            <div id='eventButtons' style="float: right">
+                <button type="button" onclick="submitMarks()" class="btn-xs" style="margin-right: 2px;">Submit</button>
+                <button type="button" onclick="resetAllMarks()" class="btn-xs" style="margin-right: 2px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id='tableauViz' style='width: 1000px; height: 920px;'></div>
+    <div id='editViz' style='width: 1225px; height: 1000px; display:none'></div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/scripts/jquery-ui")
+    @Scripts.Render(@ConfigurationManager.AppSettings["TableauServer"] + "/javascripts/api/tableau-2.0.0.min.js")
+    @Scripts.Render("~/Scripts/Home/TableauViz")
+    @Scripts.Render("~/Scripts/Home/TableauViz/menu")
+
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+
+        //Getting the Tableau Server ticket + URL from the controller
+        ticket = '@Html.Action("GetTrustedTicket", "Home")';
+        tableauServer = '@ConfigurationManager.AppSettings["TableauServer"]';
+        tableauSite = '/@User.Identity.GetUserEmail().Split('@')[1].Split('.')[0]'
+        tableauPath = '/views/' + '@Html.Raw(Session["vizName"])'; 
+
+        function tableauWriteBack (marks)
+        {
+            $.ajax({
+                url: '@Url.Action("TableauWriteBack", "Home")',
+                datatype: "json",
+                traditional: true,
+                data: { array: marks },
+                success: function (data) {
+                    //call is successfully completed and we got result in data
+                    alert(data);
+                    var plural = ((marks.length == 1) ? "" : "s");
+                    $('#eventPanel').html("Success! <b>" + marks.length + "</b> selection" + plural + " submitted for research.");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //some errror, some show err msg to user and log the error  
+                    $('#eventPanel').html("Unfortunately there's been an error with the database. Your selection was NOT saved.");
+                }
+            });
+
+            $('#eventBox').hide(2000);
+        }
+
+    </script>
+}

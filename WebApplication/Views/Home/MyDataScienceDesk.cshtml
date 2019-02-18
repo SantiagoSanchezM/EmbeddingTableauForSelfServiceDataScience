@@ -1,0 +1,170 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@using System.Configuration;
+
+@section Menu {
+    @Scripts.Render("~/Scripts/Home/DataScienceDesk/menu")
+}
+
+@Styles.Render("~/Styles/Elements/thumbnailImages.css")
+
+@{
+    ViewBag.Title = "My Data Science Desk";
+}
+
+<div class="row">
+    <div style="float:left; padding-left:20px">
+        <div class="row">
+            <div style="padding-right:40px" class="col-md-3 col-sm-6 col-xs-12" onclick="showParameters('Price')">
+                <div style="min-width:250px;" class="info-box">
+                    <span class="info-box-icon bg-maroon"><i class="fa fa-home"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Price Predictor</span>
+                        <span class="info-box-number">Used 1 time(s)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div style="padding-right:40px" class="col-md-3 col-sm-6 col-xs-12" onclick="showParameters('Sentiment')">
+                <div style="min-width:250px;" class="info-box">
+                    <span class="info-box-icon bg-orange"><i class="fa fa-heart"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Buyer Sentiment</span>
+                        <span class="info-box-number">Used 1 time(s)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="PriceInput">
+        <div style="max-width:150px; padding-left:20px" class="col-md-3">
+            <div class="row">
+                Bedrooms: <input id="bedrooms" class="form-control" type="number" placeholder="0 Bedrooms " tabindex="1">
+            </div>
+            <div style="padding-top:10px" class="row">
+                Sqft living: <input id="sqftLiving" class="form-control" type="number" placeholder="0 Square Feet" tabindex="3">
+            </div>
+            <div style="padding-top:10px" class="row">
+                Zip Code:<input id="zipCode" class="form-control" type="number" placeholder="98121" tabindex="5">
+            </div>
+        </div>
+        <div style="max-width:150px; padding-left:20px" class="col-md-3">
+            <div class="row">
+                Bathrooms:<input id="bathrooms" class="form-control" type="number" placeholder="0 Bathrooms" tabindex="2">
+            </div>
+            <div style="padding-top:10px" class="row">
+                Sqft lot:<input id="sqftLot" class="form-control" type="number" placeholder="0 Square Feet" tabindex="4">
+            </div>
+            <div style="padding-top:30px" class="row">
+                <button type="submit" onclick="submitInput()" style="width:145px" class="btn bg-maroon" data-toggle="modal" data-target="#myModal">Run the Model!</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="SentimentInput" style="display:none">
+        <div style="max-width:150px; padding-left:20px" class="col-md-3">
+            <div class="row">
+                City: <input id="inputCity" class="form-control" type="text" placeholder="Seattle">
+            </div>
+        </div>
+        <div style="max-width:150px; padding-left:20px" class="col-md-3">
+            <div class="row">
+                Platform:<input id="inputPlatform" class="form-control" type="text" placeholder="Twitter">
+            </div>
+            <div style="padding-top:2px" class="row">
+                <button type="submit" style="width:145px" class="btn bg-orange">Run the Model!</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dataScientist" style="float:right; width:200px" class="col-md-3">
+        <img src="Images/datascientist.png" style="height:180px; padding-right:60px;" alt="data-scientist-logo">
+    </div>
+</div>
+
+<h1 style="font-size:24px; padding-left:5px; padding-bottom: 10px;">My Tableau Data Science Workbooks</h1>
+
+<table>
+    <thead>
+        <tr></tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; int size = 0; }
+        @while (i < ViewBag.Images.Length)
+        {
+            if (size % 4 == 0)
+            {
+                <text>
+                    <tr>
+                </text>
+            }
+
+            <td style="padding-right:22px;">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <a href="@Url.Action("TableauViz", "Home", new { vizName = ViewBag.WorkbookPath[i] })"><img src="@ViewBag.Images[i]" alt="Load Viz" /></a>
+                    </div>
+                    <div class="portfolio-info-fade">
+                        <ul>
+                            <li class="portfolio-project-name">@ViewBag.WorkbookName[i]</li>
+                            <li class="read-more">
+                                <a href="@Url.Action("TableauViz", "Home", new { vizName = ViewBag.WorkbookPath[i] })" class="btn">Open</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </td>
+
+            i++; size++;
+        }
+</tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Price Predictor</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div id="modelLoading" class="progress-bar progress-bar-striped active bg-maroon">Loading...</div>
+                </div>
+                Please wait while we run the model, this shouldn't take long.
+            </div>
+            <div class="modal-footer">
+                <a href="@Url.Action("TableauViz", "Home", new { vizName = @ConfigurationManager.AppSettings["modelVizPath"] })"><button id="modelOpenWorkbook" type="button" class="btn btn-primary disabled bg-maroon">Open Workbook</button></a>
+                <button id="modelCloseDialog" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/scripts/jquery-ui")
+    @Scripts.Render("~/Scripts/Home/DataScienceDesk")
+
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+
+
+        function showParameters(modelName) {
+            if (modelName == "Price") {
+                $('#PriceInput').show(0);
+                $('#SentimentInput').hide(0);
+                return;
+            }
+            else {
+                $('#PriceInput').hide(0);
+                $('#SentimentInput').show(0);
+                return;
+            }
+        }
+
+    </script>
+}

@@ -1,0 +1,43 @@
+﻿@using WebApplication.Extensions
+@using System.Configuration;
+
+@{
+    ViewBag.Title = "";
+}
+
+	<div>
+		<div id='InputViz' style='width: 800px; height: 600px; float:left;'></div>
+		<div id='InputText' style='width: 100px; height: 600px; float:left; display:none;'>
+			<a class="btn btn-app" style='margin-top: 10px;' onclick="submitInput()"><i class="fa fa-save"></i>Submit</a>
+			<div id='blank' style='width: 100px; height: 10px;'></div>
+			<input id="Aripiprazole" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Celecoxib" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Dutasteride" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Esomeprazole" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Glatiramer acetate" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Imatinib mesylate" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Memantine HCl" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Metformin" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Olopatadine" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+			<input id="Rosuvastatin" class="form-control" type="text" placeholder="0 Units" style="margin-top: 12px; margin-bottom: 12px;">
+		</div>
+	</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/scripts/jquery-ui")
+	@Scripts.Render("~/bundles/scripts/jquery-validate")
+    @Scripts.Render(@ConfigurationManager.AppSettings["TableauServer"] + "/javascripts/api/tableau-2.0.0.min.js")
+    @Scripts.Render("~/Scripts/Home/InputViz")
+    @Scripts.Render("~/Scripts/Home/InputViz/menu")
+
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+
+        //Getting the Tableau Server ticket + URL from the controller
+        ticket = '@Html.Action("GetTrustedTicket", "Home")';
+        tableauServer = '@ConfigurationManager.AppSettings["TableauServer"]';
+        tableauSite = '/@User.Identity.GetUserEmail().Split('@')[1].Split('.')[0]'
+        tableauPath = '/views/' + '@Html.Raw(Session["vizName"])'
+
+    </script>
+}

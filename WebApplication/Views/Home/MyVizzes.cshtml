@@ -1,0 +1,57 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+
+@{
+    ViewBag.Title = " My Analytics Menu";
+}
+
+@section Menu {
+    @Scripts.Render("~/Scripts/Home/MyVizzes/menu")
+}
+
+    @Styles.Render("~/Styles/Elements/thumbnailImages.css")
+
+    <div>
+        <table>
+            <thead >
+                <tr></tr>
+            </thead>
+            <tbody>
+                @{ int i = 0; int size = 0; }
+                @while (i < ViewBag.Images.Length)
+                {
+                    if (size % 4 == 0)
+                    {
+                        <text> <tr> </text> 
+                    }
+
+                    <td style="padding-left:22px; padding-right:22px;">
+                        <div class="portfolio-item">
+                            <div class="portfolio-image">
+                                <a href="@Url.Action("TableauViz", "Home", new { vizName = ViewBag.WorkbookPath[i] })"><img src="@ViewBag.Images[i]" alt="Load Viz" /></a>
+                            </div>
+                            <div class="portfolio-info-fade">
+                                <ul>
+                                    <li class="portfolio-project-name">@ViewBag.WorkbookName[i]</li>
+                                    <li class="read-more">
+                                        <a href="@Url.Action("TableauViz", "Home", new { vizName = ViewBag.WorkbookPath[i] })" class="btn">Open</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+
+                    i++; size++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/scripts/jquery-ui")
+
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+}
